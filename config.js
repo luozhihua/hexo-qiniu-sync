@@ -13,7 +13,7 @@ if(hexo.config.qiniu.secret_file){
 	}
 	if(qnSec.access_key){
 		hexo.config.qiniu.access_key=qnSec.access_key;
-	}    
+	}
 }
 
 // 七牛的配置组
@@ -28,13 +28,13 @@ if(qnConfig.offline){
 	if(qnConfig.sync){
 		// 同步功能必须配置空间名
 		if(! qnConfig.bucket){
-			throw new Error('enable sync must set bucket');	
+			throw new Error('enable sync must set bucket');
 		}
 	}
 	if(!qnConfig.urlPrefix){
 		// 在线渲染urlPrefix和bucket至少配置一个
 		if(!qnConfig.bucket){
-		throw new Error('bucket and urlPrefix must has one');
+			throw new Error('bucket and urlPrefix must has one');
 		}else{
 			// 没有配置urlPrefix时根据bucket生成
 			qnConfig.url_Prefix = ['http://',qnConfig.bucket,'.qiniucdn.com',qnConfig.dirPrefix ? '/' + qnConfig.dirPrefix : ''].join('');
@@ -43,6 +43,7 @@ if(qnConfig.offline){
 		qnConfig.url_Prefix = qnConfig.urlPrefix;
 	}
 }
+
 log.i('-----------------------------------------------------------');
 log.i('qiniu state: '.yellow + (qnConfig.offline ? 'offline' : 'online'));
 log.i('qiniu sync:  '.yellow + (qnConfig.sync ? 'true' : 'false'));

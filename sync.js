@@ -48,7 +48,7 @@ function uploadFile(key, localFile) {
     qiniu.io.putFile(uptoken, key, localFile, extra, function(err, ret) {
       if(!err) {
         // 上传成功， 处理返回值
-        //console.log(ret.hash, ret.key, ret.persistentId);       
+        //console.log(ret.hash, ret.key, ret.persistentId);
       } else {
         // 上传失败， 处理返回代码
         console.log(err);
@@ -71,8 +71,8 @@ var qetag = require('./qetag');
  */
 var check_upload = function (file, name) {
     //uploadFile(config.bucket, file.replace(/\\/g, '/'), name);
-    
-    
+
+
 
     //获取文件信息
     client.stat(config.bucket, name, function(err, ret) {
@@ -80,13 +80,13 @@ var check_upload = function (file, name) {
         if (!err) {
             //console.log(ret.hash, ret.fsize, ret.putTime, ret.mimeType);
             getEtag(file, function (hash) {
-                
+
                 if(hash != ret.hash){
                     // 不更新已存在的，忽略
                     if (!update_exist) {
                         log.i('Don\'t upload exist file: '.yellow + file);
                         return;
-                    } 
+                    }
 
                     need_upload_nums++;
                     if (scan_mode) return;
@@ -105,7 +105,7 @@ var check_upload = function (file, name) {
                 log.i('Need upload file: '.yellow + file);
                 uploadFile(name, file);
             }else{
-                log.e('get file stat err: '.cyan + name + '\n' + err);    
+                log.e('get file stat err: '.cyan + name + '\n' + err);
             }
         }
     });
@@ -154,15 +154,15 @@ var watch = function () {
     scan_mode = false;
     log.i('Now start qiniu watch.'.yellow);
     var watcher = chokidar.watch(local_dir, {ignored: /[\/\\]\./, persistent: true});
-   
+
     watcher.on('add', function(file, event) {
-        
+
         var name = path.join(dirPrefix, file.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
         check_upload(file, name);
     });
-   
+
     watcher.on('change', function(file, event) {
-        
+
         var name2 = path.join(dirPrefix, file.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
         check_upload(file, name2);
     });
@@ -177,7 +177,9 @@ function isIgnoringFiles(path){
     if (!ignoring_files.length) return false;
 
     for (var i = 0, l = ignoring_files.length; i < l; i++){
-        if (minimatch(path, ignoring_files[i])) return true;
+        if (minimatch(path, ignoring_files[i], {dot: false})) {
+            return true;
+        }
     }
 
     return false;
@@ -230,13 +232,16 @@ var scan = function () {
  */
 var scan_end = function () {
     log.i('Need upload file num: '.yellow + need_upload_nums + (need_upload_nums>0 ? '\nPlease run `hexo qiniu sync` to sync.' : '').green.bold);
-    
+
 };
 
 /**
  * 链接目录
  */
 var symlink = function (isPublicDir){
+
+    return;
+
     var dirpath = path.join(isPublicDir ? publicDir : sourceDir, local_dir_name);
 
     if( fs.existsSync(dirpath)){
@@ -257,7 +262,7 @@ var symlink = function (isPublicDir){
             log.e('Please ensure that run in administrator mode!'.red);
         }
     }
-      
+
 };
 
 /**
